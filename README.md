@@ -20,8 +20,8 @@ You will need your fibonacci-number calculating function from a previous morning
 
 ## Furtherer
 1. Write test cases for a POST request to `/api/v1/fibonacci` that...
-    a. stores a number in the fibonacci database (check that it's really in the database, then delete it after the test!)
-    b. rejects the number if it is not a fibonacci number (e.g. 4 is not a fibonacci number)
+    - stores a number in the fibonacci database (check that it's really in the database, then delete it after the test!)
+    - rejects the number if it is not a fibonacci number (e.g. 4 is not a fibonacci number)
 
 ## Furtherest
 1. Write a test case for a PUT request to `/api/v1/fibonacci/:n` that changes the nth fibonacci number, and get it to pass. Make sure to change the number back after each test!
