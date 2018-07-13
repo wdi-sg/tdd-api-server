@@ -18,6 +18,11 @@ function F(start = 1, end = 2) {
     return calc.slice(start-1, end);
 }
 
+beforeAll((done) => {
+    db = new pg.Pool(dbConfig);
+    done();
+})
+
 afterAll((done) => {
     db.end(() => {
         server.close(() => {
@@ -26,8 +31,8 @@ afterAll((done) => {
             } else {
                 fs.writeFileSync('./__tests__/tracker', ++last);
             };
-            done();
         });
+        done();
     });
 });
 
@@ -59,11 +64,12 @@ function __second() {
 
 function __third() {
     return it('GET /api/v1/fibonacci?start=X should respond with a status of 200 and a JSON object with key "status" and value "success", key "result" and value an array of 20 Fibonacci numbers retrieved from the database, starting from the Xth number', async () => {
-        const response = await request(server).get('/api/v1/fibonacci?start=10');
+        const start = Math.ceil((Math.random() * 20) + 30);
+        const response = await request(server).get(`/api/v1/fibonacci?start=${start}`);
         expect(response.statusCode).toBe(200);
         expect(response.body).toEqual({
             status: "success",
-            result: F(10, 29)
+            result: F(start, start+19)
         });
         last = 3;
     });
@@ -71,7 +77,8 @@ function __third() {
 
 function __fourth() {
     return it('GET /api/v1/fibonacci?start=X should respond with a status of 400 and a JSON object with key "status" and value "failed", key "result" and value "invalid input" if X is less than 1', async () => {
-        const response = await request(server).get('/api/v1/fibonacci?start=0');
+        const start = Math.ceil((Math.random() * 20) + 30) * -1;
+        const response = await request(server).get(`/api/v1/fibonacci?start=${start}`);
         expect(response.statusCode).toBe(400);
         expect(response.body).toEqual({
             status: "failed",
@@ -83,11 +90,13 @@ function __fourth() {
 
 function __fifth() {
     return it('GET /api/v1/fibonacci?start=X&end=Y should respond with a status of 200 and a JSON object with key "status" and value "success", key "result" and value an array of Fibonacci numbers retrieved from the database, starting from the Xth number an ending at the Yth number, inclusive', async () => {
-        const response = await request(server).get('/api/v1/fibonacci?start=50&end=60');
+        const start = Math.ceil((Math.random() * 20) + 30);
+        const end = start + 10;
+        const response = await request(server).get(`/api/v1/fibonacci?start=${start}&end=${end}`);
         expect(response.statusCode).toBe(200);
         expect(response.body).toEqual({
             status: "success",
-            result: F(50, 60)
+            result: F(start, end)
         });
         last = 5;
     });
@@ -95,11 +104,13 @@ function __fifth() {
 
 function __sixth() {
     return it('GET /api/v1/fibonacci?start=X&end=Y&sort=desc should respond with a status of 200 and a JSON object with key "status" and value "success", key "result" and value an array of Fibonacci numbers retrieved from the database, starting from the Xth number an ending at the Yth number, inclusive, sorted in descending order', async () => {
-        const response = await request(server).get('/api/v1/fibonacci?start=50&end=60&sort=desc');
+        const start = Math.ceil((Math.random() * 20) + 30);
+        const end = start + 10;
+        const response = await request(server).get(`/api/v1/fibonacci?start=${start}&end=${end}&sort=desc`);
         expect(response.statusCode).toBe(200);
         expect(response.body).toEqual({
             status: "success",
-            result: F(50, 60).sort((a,b) => {return a < b})
+            result: F(start, end).sort((a,b) => {return b - a})
         });
         last = 6;
     });
@@ -107,7 +118,9 @@ function __sixth() {
 
 function __seventh() {
     return it('GET /api/v1/fibonacci?start=X&end=Y should respond with a status of 400 and a JSON object with key "status" and value "failed", key "result" and value "invalid input" if Y is less than X', async () => {
-        const response = await request(server).get('/api/v1/fibonacci?start=49&end=30');
+        const start = Math.ceil((Math.random() * 20) + 30);
+        const end = start - 10;
+        const response = await request(server).get(`/api/v1/fibonacci?start=${start}&end=${end}`);
         expect(response.statusCode).toBe(400);
         expect(response.body).toEqual({
             status: "failed",
@@ -119,7 +132,9 @@ function __seventh() {
 
 function __eighth() {
     return it('GET /api/v1/fibonacci should respond with a status of 400 and a JSON object with key "status" and value "failed", key "result" and value "unknown query parameters" if Y is less than X', async () => {
-        const response = await request(server).get('/api/v1/fibonacci?start=10&end=20&sort=desc&funny=true');
+        const start = Math.ceil((Math.random() * 20) + 30);
+        const end = start - 10;
+        const response = await request(server).get(`/api/v1/fibonacci?start=${start}&end=${end}&sort=desc&funny=true`);
         expect(response.statusCode).toBe(400);
         expect(response.body).toEqual({
             status: "failed",
@@ -131,7 +146,8 @@ function __eighth() {
 
 function __ninth() {
     return it('GET /api/v1/fibonacci should respond with a status of 400 and a JSON object with key "status" and value "failed", key "result" and value "unknown query parameters" if an end query is provided without a start query', async () => {
-        const response = await request(server).get('/api/v1/fibonacci?end=20&sort=desc&funny=true');
+        const end = Math.ceil((Math.random() * 20) + 30);
+        const response = await request(server).get(`/api/v1/fibonacci?end=${end}&sort=desc&funny=true`);
         expect(response.statusCode).toBe(400);
         expect(response.body).toEqual({
             status: "failed",
@@ -142,6 +158,8 @@ function __ninth() {
 }
 
 const tests = [__first, __second, __third, __fourth, __fifth, __sixth, __seventh, __eighth, __ninth];
+
+if (last > 9) {last = 9;}
 
 for (let i = 0; i < last; i++) {
     tests[i]();
