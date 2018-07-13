@@ -1,7 +1,6 @@
 # An Introduction to Test-Driven Web Development
 
 This exercise contains 10 tests. Your goal is to get each test to pass, _1 by 1_.
-You will need your fibonacci-number calculating function from a previous morning exercise at https://github.com/wdi-sg/fibonacci-numbers.
 
 ## Instructions
 1. Fork and clone this repository.
