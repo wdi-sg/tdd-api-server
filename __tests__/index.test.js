@@ -58,6 +58,7 @@ function __second() {
                 result: null
             });
             last = 2;
+            // await db.connect();
         }
     });
 }

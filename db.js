@@ -5,5 +5,5 @@ const dbConfig = {
     database:   'math-api',
     port:       5432
 };
-let db = new pg.Pool(dbConfig);
+let db = new pg.Client(dbConfig);
 module.exports = {db, dbConfig};
