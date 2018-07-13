@@ -3,7 +3,8 @@ const dbConfig = {
     user:       'kokcheekean',
     host:       '127.0.0.1',
     database:   'math-api',
-    port:       5432
+    port:       5432,
+    max:        1000
 };
-let db = new pg.Client(dbConfig);
+let db = new pg.Pool(dbConfig);
 module.exports = {db, dbConfig};

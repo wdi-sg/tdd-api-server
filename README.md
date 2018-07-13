@@ -1,6 +1,6 @@
 # An Introduction to Test-Driven Web Development
 
-This exercise contains 10 tests. Your goal is to get each test to pass, _1 by 1_.
+This exercise contains 9 tests. Your goal is to get each test to pass, _1 by 1_.
 
 ## Instructions
 1. Fork and clone this repository.
