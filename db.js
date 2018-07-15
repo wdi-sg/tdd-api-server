@@ -1,6 +1,6 @@
 const pg = require('pg');
 const dbConfig = {
-    user:       'kokcheekean',
+    user:       'elvera',
     host:       '127.0.0.1',
     database:   'math-api',
     port:       5432,
